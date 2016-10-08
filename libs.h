@@ -42,7 +42,7 @@ uint16_t adc_result_LD;
 uint16_t adc_result_RD;
 uint16_t adc_result_LF;
 uint16_t adc_result_RF;
+void setbat();
 void ledYellow ();
-void ledRed();
 void ledGreen();	
 #endif /* INCFILE1_H_ */

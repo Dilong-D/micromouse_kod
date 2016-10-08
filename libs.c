@@ -41,7 +41,7 @@ void setADC(){	//konfuguracja adc
 	ADCB.REFCTRL = ADC_REFSEL0_bm; // 0x10
 	ADCB.EVCTRL = 0x00 ;
 	ADCB.CTRLA = ADC_ENABLE_bm; // 0x01
-	PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
+	
 	//-------------setADC_LD
 	PORTB.DIRCLR = PIN1_bm;// Ustawiamy PB1 jako wej?cie
 	ADCB.CH0.CTRL = ADC_CH_INPUTMODE0_bm; // 0x01
@@ -122,6 +122,7 @@ void setMotorR(){
 }
 
 void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
+	cli();
 	TCD0.CCD		=	o;
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN5_bm;//input 1->0
@@ -139,9 +140,11 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
 		PORTD.OUTSET	=	PIN5_bm;//input 1->1
 		PORTD.OUTCLR	=	PIN4_bm;//input 2->0		
 	}
+	sei();
 }
 void runR(int8_t o, int8_t k){ //kierowanie silnikiem R
 	TCD0.CCA		=	o;
+	cli();
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN1_bm;//input 1->0
 		PORTD.OUTCLR	=	PIN2_bm;//input 2->0
@@ -158,6 +161,7 @@ void runR(int8_t o, int8_t k){ //kierowanie silnikiem R
 		PORTD.OUTSET	=	PIN1_bm;//input 1->1
 		PORTD.OUTCLR	=	PIN2_bm;//input 2->0
 	}
+	sei();
 }
 
 void setall(){
@@ -171,7 +175,9 @@ void setall(){
 							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
 	PORTF.PIN3CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F3
 							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
-	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc | PORT_INT1LVL_LO_gc;;    // poziom HI dla przerwania INT0 portu F2
+	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc | PORT_INT1LVL_LO_gc;;    // poziom LO dla przerwania INT0 portu F2 F3
+	PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
+	sei();
 	
 	
 	//-------------------------------	enkodera R	------------------------------------------------------
@@ -214,15 +220,21 @@ void setall(){
 	// ----------------------------		LCD		------------------------------
 	LcdInit();
 	setADC();
-	
+	setbat();
 }
 
 void ledYellow(){
 	PORTF_OUTTGL=PIN5_bm;
 }
-void ledRed(){
+
+void ledGreen(){
 	PORTF_OUTTGL=PIN6_bm;
 }
-void ledGreen(){
-	PORTF_OUTTGL=PIN7_bm;
+void setbat(){//funkcja ustawiajaca przerwanie na za niski poziom baterii
+			// konfiguracja komparatora 0 w porcie A
+			ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |
+									AC_MUXNEG_SCALER_gc;    // wejœcie + PIN A6
+			ACA.AC0CTRL			=	AC_ENABLE_bm|AC_HYSMODE_SMALL_gc|AC_INTLVL_LO_gc|AC_INTMODE_FALLING_gc;
+			ACA.CTRLB			=	45;                    // pocz¹tkowe ustawienie dzielnika napiêcia
+			ACA.CTRLA			=	AC_AC0OUT_bm;
 }

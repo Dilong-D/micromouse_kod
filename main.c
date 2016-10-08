@@ -51,21 +51,26 @@ ISR(ADCB_CH3_vect) {
 }
 //Przerwanie przycisk dol
 ISR(PORTF_INT0_vect){
-	ledGreen();
+				if(ACA.CTRLB > 0) ACA.CTRLB--;        // zmniejszanie Vref
+				ledGreen();        // wy³¹czenie diody LED 0
+				_delay_ms(100);                       // czekanie 100ms
 }
 //Przerwanie przycisk gora
 ISR(PORTF_INT1_vect){
-	ledRed();
+				if(ACA.CTRLB < 63 ) ACA.CTRLB++;      // zwiêkszanie Vref
+				ledYellow();        // wy³¹czenie diody LED 1
+				_delay_ms(100);                       // czekanie 100ms
+}
+ISR(ACA_AC0_vect){
+	PORTF_OUTSET=PIN7_bm;
+
 }
 
 int main(void) {
 	setall();
-	ledRed();
-	runR(20,0);
-	runL(20,0);
-	
-	
-/*	while(1)
+	runR(20,2);
+	runL(20,2);
+	while(1)
 	{
 		LcdClear();
 		LcdDec(L_ENKODER);
@@ -74,30 +79,8 @@ int main(void) {
 		_delay_ms(200);
 		
 	};
-	*/
-TWI_MasterInit();
-enableDefault();
-
-
-struct gyro_xyz dane;
-//uint8_t i;
-
-while(1) {
 	
-	//who = readByte(REG_OUT_X_L);
-	//	break;
-	dane = readByteMulti();
-	
-	LcdClear();
-	Lcd("x ");
-	LcdDec(dane.x);
-	Lcd2;
-	Lcd("y ");
-	LcdDec(dane.y);
-	_delay_ms(500);
-};
 }
-	
 	
 		
 		
