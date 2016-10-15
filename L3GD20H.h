@@ -58,6 +58,7 @@
 */
 
 /* Output data rate selection (DR1-DR0) */
+
 typedef enum CTRL1_OUTPUT_DATA_RATE_enum
 {
 	

@@ -41,17 +41,17 @@ void setADC(){	//konfuguracja adc
 	ADCB.REFCTRL = ADC_REFSEL0_bm; // 0x10
 	ADCB.EVCTRL = 0x00 ;
 	ADCB.CTRLA = ADC_ENABLE_bm; // 0x01
-	
+	PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
 	//-------------setADC_LD
 	PORTB.DIRCLR = PIN1_bm;// Ustawiamy PB1 jako wej?cie
 	ADCB.CH0.CTRL = ADC_CH_INPUTMODE0_bm; // 0x01
-	ADCB.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc;
+	ADCB.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc;
 	ADCB.INTFLAGS = ADC_CH0IF_bm; // 0x01
 	ADCB.CH0.INTCTRL = ADC_CH_INTLVL1_bm | ADC_CH_INTLVL0_bm; // 0x03
 	//-------------setADC_RD
 	PORTB.DIRCLR = PIN0_bm;// Ustawiamy PB0 jako wej?cie
 	ADCB.CH1.CTRL = ADC_CH_INPUTMODE0_bm; // 0x01
-	ADCB.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc;
+	ADCB.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc;
 	ADCB.INTFLAGS = ADC_CH1IF_bm; // 0x01
 	ADCB.CH1.INTCTRL = ADC_CH_INTLVL1_bm | ADC_CH_INTLVL0_bm; // 0x03
 	//-------------setADC_LF
@@ -61,7 +61,7 @@ void setADC(){	//konfuguracja adc
 	ADCB.INTFLAGS = ADC_CH2IF_bm; // 0x01
 	ADCB.CH2.INTCTRL = ADC_CH_INTLVL1_bm | ADC_CH_INTLVL0_bm; // 0x03
 	//-------------setADC_RF
-	PORTB.DIRCLR = PIN2_bm;// Ustawiamy PB1 jako wej?cie
+	PORTB.DIRCLR = PIN3_bm;// Ustawiamy PB1 jako wej?cie
 	ADCB.CH3.CTRL = ADC_CH_INPUTMODE0_bm; // 0x01
 	ADCB.CH3.MUXCTRL = ADC_CH_MUXPOS_PIN3_gc;
 	ADCB.INTFLAGS = ADC_CH3IF_bm; // 0x01
@@ -69,34 +69,33 @@ void setADC(){	//konfuguracja adc
 	sei();	
 }
 uint16_t adcPomiar_RD(){ //pomiar adc RD
-	PORTE.OUTSET		=	PIN3_bm;// Start ADC conversion
-	ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
+	PORTE.OUTSET		=	PIN4_bm;// Start ADC conversion
+	ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
 	_delay_us(100);
-	PORTE.OUTCLR		=	PIN3_bm;
+	PORTE.OUTCLR		=	PIN4_bm;
 	return adc_result_RD;
 }
 uint16_t adcPomiar_LD(){//pomiar adc lD
-	PORTE.OUTSET		=	PIN4_bm;// Start ADC conversion
-	ADCB.CH1.CTRL		|=	ADC_CH_START_bm;
+	PORTE.OUTSET		=	PIN7_bm;// Start ADC conversion
+	ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
 	_delay_us(100);
-	PORTE.OUTCLR		=	PIN4_bm;
+	PORTE.OUTCLR		=	PIN7_bm;
 	return adc_result_LD;
 }
 uint16_t adcPomiar_LF(){ //pomiar adc LF
 	PORTE.OUTSET		=	PIN6_bm;// Start ADC conversion
-	ADCB.CH2.CTRL		|=	ADC_CH_START_bm;
+	ADCB.CH1.CTRL		|=	ADC_CH_START_bm;
 	_delay_us(100);
 	PORTE.OUTCLR		=	PIN6_bm;
 	return adc_result_LF;
 }
 uint16_t adcPomiar_RF(){ //pomiar adc RF
-	PORTE.OUTSET		=	PIN7_bm;// Start ADC conversion
-	ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
+	PORTE.OUTSET		=	PIN5_bm;// Start ADC conversion
+	ADCB.CH2.CTRL		|=	ADC_CH_START_bm;
 	_delay_us(100);
-	PORTE.OUTCLR		=	PIN7_bm;
+	PORTE.OUTCLR		=	PIN5_bm;
 	return adc_result_RF;
 }
-
 void setMotorL(){
 	//------------ustawienia silnika 1
 	PORTD.DIRSET	=	PIN5_bm|//inpu2
@@ -122,7 +121,6 @@ void setMotorR(){
 }
 
 void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
-	cli();
 	TCD0.CCD		=	o;
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN5_bm;//input 1->0
@@ -140,11 +138,9 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
 		PORTD.OUTSET	=	PIN5_bm;//input 1->1
 		PORTD.OUTCLR	=	PIN4_bm;//input 2->0		
 	}
-	sei();
 }
 void runR(int8_t o, int8_t k){ //kierowanie silnikiem R
 	TCD0.CCA		=	o;
-	cli();
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN1_bm;//input 1->0
 		PORTD.OUTCLR	=	PIN2_bm;//input 2->0
@@ -161,25 +157,20 @@ void runR(int8_t o, int8_t k){ //kierowanie silnikiem R
 		PORTD.OUTSET	=	PIN1_bm;//input 1->1
 		PORTD.OUTCLR	=	PIN2_bm;//input 2->0
 	}
-	sei();
 }
 
 void setall(){
 	// ============================		wejscia		===========================================================================================
-	
-	//-----------------------------		przycisk 1	-----------------------------------------------------------------------
-	PORTF.DIRCLR		=	PIN2_bm|PIN3_bm;					// pin F2 F3 jako wejœcie (przycisk FLIP)
-	PORTF.INT0MASK		=   PIN2_bm;               // pin F2 ma generowaæ przerwania INT0
-	PORTF.INT1MASK		=   PIN3_bm; 
-	PORTF.PIN2CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F2
-							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
-	PORTF.PIN3CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F3
-							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
-	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc | PORT_INT1LVL_LO_gc;;    // poziom LO dla przerwania INT0 portu F2 F3
-	PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
 	sei();
-	
-	
+	//-----------------------------		przyciski	-----------------------------------------------------------------------
+	PORTF.DIRCLR		=	PIN2_bm|PIN3_bm;					// pin F2 F3 jako wejœcie
+	PORTF.INT0MASK		=   PIN2_bm;               // pin F2 ma generowaæ przerwania INT0
+	PORTF.INT1MASK		=   PIN3_bm;
+	PORTF.PIN2CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F2
+	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+	PORTF.PIN3CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F3
+	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc| PORT_INT1LVL_LO_gc;   // poziom LO dla przerwania INT0 portu F2 F3
 	//-------------------------------	enkodera R	------------------------------------------------------
 	PORTC.PIN0CTRL		=	PORT_ISC_LEVEL_gc | PORT_OPC_PULLUP_gc;
 	PORTC.PIN1CTRL		=	PORT_ISC_LEVEL_gc | PORT_OPC_PULLUP_gc;
@@ -202,7 +193,7 @@ void setall(){
 	setMotorL();
 	setMotorR();
 	//-----------------------------------diody IR--------------------------------------
-	PORTE.DIR			=	PIN5_bm|
+	PORTE.DIRSET		=	PIN5_bm|
 							PIN4_bm|
 							PIN6_bm|
 							PIN7_bm;
@@ -210,19 +201,24 @@ void setall(){
 							PIN4_bm|
 							PIN6_bm|
 							PIN7_bm;
-	//-----------------------------------diody LED--------------------------------------
-	PORTF.DIR			=	PIN5_bm|
+//-----------------------------------diody LED--------------------------------------
+	PORTF.DIRSET		=	PIN5_bm|
 							PIN6_bm|
 							PIN7_bm;
 	PORTF.OUTCLR		=	PIN5_bm|
 							PIN6_bm|
-							PIN7_bm; 
+							PIN7_bm;  
 	// ----------------------------		LCD		------------------------------
 	LcdInit();
 	setADC();
 	setbat();
+	TCC1.INTCTRLA     =    TC_OVFINTLVL_LO_gc;         // przepe³nienie ma generowaæ przerwanie LO
+	
+	TCC1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
+	TCC1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
+	TCC1.PER=2*1024;
+	
 }
-
 void ledYellow(){
 	PORTF_OUTTGL=PIN5_bm;
 }
@@ -231,10 +227,11 @@ void ledGreen(){
 	PORTF_OUTTGL=PIN6_bm;
 }
 void setbat(){//funkcja ustawiajaca przerwanie na za niski poziom baterii
-			// konfiguracja komparatora 0 w porcie A
-			ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |
-									AC_MUXNEG_SCALER_gc;    // wejœcie + PIN A6
-			ACA.AC0CTRL			=	AC_ENABLE_bm|AC_HYSMODE_SMALL_gc|AC_INTLVL_LO_gc|AC_INTMODE_FALLING_gc;
-			ACA.CTRLB			=	45;                    // pocz¹tkowe ustawienie dzielnika napiêcia
-			ACA.CTRLA			=	AC_AC0OUT_bm;
+	// konfiguracja komparatora 0 w porcie A
+	ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |
+	AC_MUXNEG_SCALER_gc;    // wejœcie + PIN A6
+	ACA.AC0CTRL			=	AC_ENABLE_bm|AC_HYSMODE_SMALL_gc|AC_INTLVL_LO_gc|AC_INTMODE_FALLING_gc;
+	ACA.CTRLB			=	45;                    // pocz¹tkowe ustawienie dzielnika napiêcia
+	ACA.CTRLA			=	AC_AC0OUT_bm;
 }
+

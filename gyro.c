@@ -18,18 +18,18 @@
 void TWI_MasterInit(void) 
 {
 	
-	/*WIEN,RIEN, ENABLE and INTLVL bits high.  0xF8 - 1111 1000 */
+	//WIEN,RIEN, ENABLE and INTLVL bits high.  0xF8 - 1111 1000 
 	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm |
 	TWI_MASTER_INTLVL_HI_gc |
 	TWI_MASTER_RIEN_bm |
 	TWI_MASTER_WIEN_bm;
-	/* SMEN - SMART MODE ENABLE - 0x01 */
+	// SMEN - SMART MODE ENABLE - 0x01 */
 	TWIE.MASTER.CTRLB	=   TWI_MASTER_SMEN_bm;
 	
-	/*Force TWI bus into idle mode - 0x01*/
+	//Force TWI bus into idle mode - 0x01
 	TWIE.MASTER.STATUS	=	TWI_MASTER_BUSSTATE_IDLE_gc;
 	
-	/*Set TWI baud rate*/
+	//Set TWI baud rate
 	TWIE.MASTER.BAUD	=	TWI_BAUDRATE; //0x35 - 400kHz
 	
 	PORTE.PIN0CTRL = PORT_OPC_WIREDANDPULL_gc;

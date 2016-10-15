@@ -233,6 +233,12 @@
     <None Include="src\ASF\common\boards\board.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="pid.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pid.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\ASF\common\boards\user_board\init.c">
       <SubType>compile</SubType>
     </Compile>

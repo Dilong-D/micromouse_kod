@@ -23,9 +23,9 @@
 #define LEWO	3
 //------------REJESTRY---------
 #define L_PWM	TCD0.CCD //zwraca wypelnienie PWM silniku L
-#define L_ENKODER TCF0.CNT //zwraca stan enkodera silnik L
+#define R_ENKODER TCF0.CNT //zwraca stan enkodera silnik L
 #define R_PWM	TCD0.CCA //zwraca wypelnienie PWM silniku R
-#define R_ENKODER TCC0.CNT //zwraca stan enkodera silnik R		
+#define L_ENKODER TCC0.CNT //zwraca stan enkodera silnik R		
 //------------FUNKCJE-----------
 uint8_t ReadCalibrationByte( uint8_t index );//kalibracja adc przez DMA
 void setADC();//ustawia ADC
@@ -42,7 +42,8 @@ uint16_t adc_result_LD;
 uint16_t adc_result_RD;
 uint16_t adc_result_LF;
 uint16_t adc_result_RF;
+void ledYellow();
+void ledGreen();
 void setbat();
-void ledYellow ();
-void ledGreen();	
+
 #endif /* INCFILE1_H_ */
