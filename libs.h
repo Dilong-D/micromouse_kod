@@ -9,7 +9,7 @@
 #ifndef LIBS_H_
 #define LIBS_H_
 
-#define F_CPU 2000000UL
+#define F_CPU 32000000UL
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -26,6 +26,9 @@
 #define R_ENKODER TCF0.CNT //zwraca stan enkodera silnik L
 #define R_PWM	TCD0.CCA //zwraca wypelnienie PWM silniku R
 #define L_ENKODER TCC0.CNT //zwraca stan enkodera silnik R		
+
+
+#define t_int 5.12 //czas miedzy dwoma przerwaniami dla PID i wyliczania pozycji.
 //------------FUNKCJE-----------
 uint8_t ReadCalibrationByte( uint8_t index );//kalibracja adc przez DMA
 void setADC();//ustawia ADC
@@ -37,13 +40,20 @@ uint16_t adcPomiar_LD();
 uint16_t adcPomiar_RD();//pomiar odleglosci
 uint16_t adcPomiar_LF();
 uint16_t adcPomiar_RF();
+void OscXtal();
 void setall();//ustawia wszystko
 uint16_t adc_result_LD;
 uint16_t adc_result_RD;
 uint16_t adc_result_LF;
 uint16_t adc_result_RF;
+
+int old_enk_l; //Stara wartosc lewego enkodera (Potrzebne do wyznaczania pozycji)
+int old_enk_r;
 void ledYellow();
 void ledGreen();
 void setbat();
+void Osc32MHz();
+void OscPLL(uint8_t pllfactor);
+uint16_t debancer (uint16_t p1,uint16_t p2,uint16_t p3);
 
 #endif /* INCFILE1_H_ */

@@ -9,9 +9,9 @@
 
 struct pid_params
 {
-	float kp;
-	float ki;
-	float kd;
+	float kr;
+	float Ti;
+	float Td;
 	float err;
 	float err_sum;
 	float err_last;
@@ -26,6 +26,8 @@ float pid_calculate(float set_val, float read_val,struct pid_params * pid_params
 
 void l_wheel(float v);
 void r_wheel(float v);
+void wheel(float vl, float vr);
 
-
+int itab;
+float tab[1000];
 #endif /* PID_H_ */

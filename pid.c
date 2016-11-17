@@ -7,82 +7,121 @@
 
 
 
-//struct nowa
-//{
-//float u;
-//unsigned int params;
-//};
+uint16_t cnt = 0;
+itab = 0;
 
 
-void pid_init(float kp, float ki, float kd, float kp_l, float ki_l, float kd_l)
+void pid_init(float kr, float Ti, float Td, float kr_l, float Ti_l, float Td_l)
 {
-	pid_params.kp = kp;
-	pid_params.ki = ki;
-	pid_params.kd = kd;
+	pid_params.kr = kr;
+	pid_params.Ti = Ti;
+	pid_params.Td = Td;
 	pid_params.err = 0;
 	pid_params.err_sum = 0;
 	pid_params.err_last = 0;
 	
-	pid_params2.kp = kp_l;
-	pid_params2.ki = ki_l;
-	pid_params2.kd = kd_l;
+	pid_params2.kr = kr_l;
+	pid_params2.Ti = Ti_l;
+	pid_params2.Td = Td_l;
 	pid_params2.err = 0;
 	pid_params2.err_sum = 0;
 	pid_params2.err_last = 0;
 }
 
+uint8_t t = 0;
+
 float pid_calculate(float set_val, float read_val, struct pid_params * pid_params1)
 {
 	if(read_val > 30000)
 	read_val = read_val - 65536;
-	float err_d, u;
+	float p,i,d, u;
 	
 	pid_params1->err = set_val - read_val;
-	err_d = pid_params1->err_last - pid_params1->err;
 	pid_params1->err_sum += pid_params1->err;
-	u = pid_params1->kp * pid_params1->err + pid_params1->ki * pid_params1->err_sum + pid_params1->kd * err_d;
+	
+	p =  pid_params1->kr * pid_params1->err;
+	i =  pid_params1->kr * t_int * pid_params1->err_sum /pid_params1->Ti;
+	d =  pid_params1->kr * pid_params1->Td * (pid_params1->err - pid_params1->err_last) / t_int;
+	
+	u = p+i+d;
 	if((u > PID_OUTPUT_MAX) || (u <  -PID_OUTPUT_MAX)){
 		pid_params1->err_sum -= pid_params1->err;
-		u = pid_params1->kp * pid_params1->err + pid_params1->ki * pid_params1->err_sum
-		+ pid_params1->kd * err_d;
+		i =  pid_params1->kr * t_int * pid_params1->err_sum /pid_params1->Ti;
+		u = p+i+d;
 	}
-
-	//
-	//moja.u=u;
-	//moja.params = (unsigned int)pid_params.err_sum;
+	
+	
+	pid_params1->err_last = pid_params1->err;
 	return u;
+
+
 }
 
-void l_wheel(float v)
-{
-	float u;
-	u = pid_calculate(v,L_ENKODER,&pid_params);
-	
-	if(u > 0)
-	runR(u,LEWO);
-	
-	else if(u < 0)
-	runR(-u,PRAWO);
-	
-	else if(u  == 0)
-	runR(0,STOP);
-	
+
+void wheel(float vl, float vr){
+	uint16_t enkl = L_ENKODER;
 	L_ENKODER=0;
-}
-
-void r_wheel(float v)
-{
-	float u;
-	u = pid_calculate(v,R_ENKODER,&pid_params2);
-	
-	if(u > 0)
-	runL(u,PRAWO);
-	
-	else if(u < 0)
-	runL(-u,LEWO);
-	
-	else if(u == 0)
-	runL(0,STOP);
-	
+	uint16_t enkr = R_ENKODER;
 	R_ENKODER=0;
+	old_enk_l = enkl;
+	old_enk_r = enkr;
+	
+	
+	if(itab < 1000)
+	{
+		if(vl > 0.1){
+		tab[itab] = vl;
+			++itab;
+		}
+	}
+	
+	
+	float ul,ur;
+	float l,r;
+	
+	vl = - vl;
+	
+	//l = 2*L_ENKODER - R_ENKODER;
+	if(vl == 0){
+		
+		ul = 0;
+		TCD0.CCA		=	100;
+		PORTD.OUTSET	=	PIN1_bm;//input 1->1
+		PORTD.OUTSET	=	PIN2_bm;//input 2->1
+		pid_params2.err_sum;
+		pid_params2.err_last;
+	}
+	else{
+		ul = pid_calculate(vl, enkl,&pid_params2);
+	}
+	
+	//r = 2*R_ENKODER - L_ENKODER;
+	if(vr == 0){
+		
+		ur = 0;
+		TCD0.CCD		=	100;
+		PORTD.OUTSET	=	PIN5_bm;//input 1->1
+		PORTD.OUTSET	=	PIN4_bm;//input 2->1
+		pid_params.err_sum;
+		pid_params.err_last;
+	}
+	else{
+		ur = pid_calculate(vr, enkr,&pid_params);
+	}
+	//if(vr != 0){
+		if(ul >= 0)
+			runL(ul,LEWO);
+	
+		else 
+			runL(-ul,PRAWO);
+	
+	
+	if(ur >= 0)
+		runR(ur,PRAWO);
+	
+	else 
+		runR(-ur,LEWO);
+	
+	
+	
 }

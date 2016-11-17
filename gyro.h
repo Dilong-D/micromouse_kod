@@ -21,7 +21,6 @@
 #define TWI_BAUD(F_SYS, F_TWI) ((F_SYS / (2 * F_TWI)) - 5)
 #define TWI_BAUDRATE TWI_BAUD(Taktfreuqenz, Takt_TWI)
 
-#define  F_CPU    2000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -52,11 +51,13 @@ struct gyro_xyz {
 
 void TWI_MasterInit(void); //funkcja ustawia podstawowe parametry I2C (TWI) 
 void enableDefault(void); //funkcja uruchamia zyroskop i ustawia podstawowe parametry
+float getAngleRadians(void);
 
 uint8_t writeByte(uint8_t addr,uint8_t val); //funkcja zmienia wartosci(8bitow) podanego rejestru (zapisanego w postaci bajtu)
 uint8_t readByte(uint8_t addr); //funkcja odczytujaca wartosc(8bitow) z podanego rejestru
 
-struct gyro_xyz readByteMulti(); //funkcja odczytuje parametry x,y,z zyroskopu
+void readByteMulti(); //funkcja odczytuje parametry x,y,z zyroskopu
 
+struct gyro_xyz gyro;
 
 #endif /* GYRO_H_ */

@@ -5,7 +5,7 @@
  * Author : Dominik Markowski, Mateusz Wasala, Jan Zyczkowski, Piotr Papiez, Artur Hadasz
  */ 
 
-#define  F_CPU    2000000UL
+#define  F_CPU    32000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -15,6 +15,12 @@
 #include "libs.h"
 #include "gyro.h"
 #include "pid.h"
+#include "pos_dir_enc.h"
+#include "moves.h"
+#include "algorithms.h"
+#include "pomiar.h"
+#include "real_alg.h"
+
 /*
 Opis portów
 port	funkcja		
@@ -33,7 +39,7 @@ B0-B4	-	fototranzystory
 C3-C7-	lcd
 */
 
-
+uint8_t set = 0;
 
 // Interrupt Service Routine for handling the ADC conversion complete interrupt
 ISR(ADCB_CH0_vect) {
@@ -50,55 +56,64 @@ ISR(ADCB_CH3_vect) {
 }
 //Przerwanie przycisk dol
 ISR(PORTF_INT0_vect){
-	ledGreen();        // wy³¹czenie diody LED 0
+	     //ledYellow();   // wy³¹czenie diody LED 0
+		 
 }
 //Przerwanie przycisk gora
 ISR(PORTF_INT1_vect){
 	ledYellow();        // wy³¹czenie diody LED 1
+	
+	
 }
 ISR(ACA_AC0_vect){
-	PORTF_OUTSET=PIN7_bm;
+	PORTF_OUTTGL=PIN7_bm;
 
 }
-ISR(TCC1_OVF_vect){
+
+ISR(TCD1_OVF_vect){
 	ledGreen();
+	wheel(des_vl, des_vr);
+	get_params_enc();
+
 }
+//ISR(TCC1_OVF_vect){
+	//
+//}
 
-
-
+ISR(OSC_OSCF_vect) {									// przerwanie w razie awarii oscylatora
+	OSC.XOSCFAIL	|=	OSC_XOSCFDIF_bm;				// kasowanie flagi przerwania
+	LcdClear();
+	Lcd("Awaria!");
+	_delay_ms(1000);
+}
 
 
 
 int main(void) {
+
+	int i;
+	int c2;
 	setall();
-	//runL(85,LEWO);
-	//runR(85,LEWO);
-	pid_init(0.006336,0.137,0,0.005912,0.1182,0);
-	while(1){
-		adcPomiar_LD();
-		adcPomiar_RD();
-		adcPomiar_LF();
-		adcPomiar_RF();
-		LcdClear();
-		Lcd1;
-		Lcd("LF");
-		LcdDec(adc_result_RF);
-		Lcd2;
-		Lcd("LD");
-		LcdDec(adc_result_LF);
-		l_wheel(-10); // ujemne do przodu
-		r_wheel(10); // dodatnie do przodu
+	
+	
+	Lcd("Hello");
+	
+_delay_ms(1000);
+	par.dir = 0;//3*PI/2;
+	par.posx = 0;
+	par.posy = 0;
+	pid_init(8.33, 24.5760, 4.0960, 8.57, 25.2988,4.2165);
+	Lcd("Start");
+	forward(100,1);
+	LcdClear();
+	LcdDec(abs2(par.posx*100));
+	Lcd2;
+	LcdDec(abs2(par.posy*100));
+	_delay_ms(50000);
+	
 		
-		_delay_ms(20);
+	while(1){	
+	}
 		
-		};
+	
 }
-	
-	
-		
-		
-
-			
-		
-	
-

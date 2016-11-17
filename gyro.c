@@ -6,7 +6,7 @@
  */
 /* ---------------------------------------------------- */
 
-#define  F_CPU    2000000UL
+#define  F_CPU    32000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -45,28 +45,11 @@ void enableDefault(void)
 {
 	// 0x6F = 0b01101111
 	// DR = 01 (200 Hz ODR); BW = 10 (50 Hz bandwidth); PD = 1 (normal mode); Zen = Yen = Xen = 1 (all axes enabled)
-	if(writeByte(REG_CTRL1, 0x6F))
-	{
-
-		LcdClear();
-		Lcd("dziala ctrl1");
-		//Lcd2;
-		//LcdDec(t);
-		_delay_ms(500);
-	}
-	
+	writeByte(REG_CTRL1, 0x6F);
 	// 0x20 = 0b00100000
 	// FS = 10 (+/- 2000 dps full scale)
-	if(writeByte(REG_CTRL4, 0x20))
-	{
-		
-		LcdClear();
-		Lcd("dziala ctrl4");
-		//Lcd2;
-		//LcdDec(t);
-		_delay_ms(500);
-		
-	}
+	writeByte(REG_CTRL4, 0x20);
+	
 }
 
 uint8_t writeByte(uint8_t addr,uint8_t val)
@@ -116,10 +99,9 @@ uint8_t readByte(uint8_t addr)
 	
 }
 
-struct gyro_xyz readByteMulti()
+void readByteMulti()
 {
 	struct gyro g;
-	struct gyro_xyz xyz;
 	
 	g.xlg = readByte(REG_OUT_X_L);
 	g.xhg = readByte(REG_OUT_X_H);
@@ -132,34 +114,36 @@ struct gyro_xyz readByteMulti()
 	if(g.xhg > 127)
 	{
 		temp = g.xhg - 127;
-		xyz.x = g.xlg + temp*256 - 32768;
+		gyro.x = g.xlg + temp*256 - 32768;
 	}
 	else
 	{
-		xyz.x = g.xlg + g.xhg*256;
+		gyro.x = g.xlg + g.xhg*256;
 	}
 	
 	if(g.yhg > 127)
 	{
 		temp = g.yhg - 127;
-		xyz.y = g.ylg + temp*256 - 32768;
+		gyro.y = g.ylg + temp*256 - 32768;
 	}
 	else
 	{
-		xyz.y = g.ylg + g.yhg*256;
+		gyro.y = g.ylg + g.yhg*256;
 	}
 	
 	if(g.zhg > 127)
 	{
 		temp = g.zhg - 127;
-		xyz.z = g.zlg + temp*256 - 32768;
+		gyro.z = g.zlg + temp*256 - 32768;
 	}
 	else
 	{
-		xyz.z = g.zlg + g.zhg*256;
+		gyro.z = g.zlg + g.zhg*256;
 	}
-	
-	return xyz;
 	
 }
 
+float getAngleRadians(){
+	readByteMulti();
+	return gyro.y*SENSITIVITY_2000DPS*DPS_TO_RADS;
+}

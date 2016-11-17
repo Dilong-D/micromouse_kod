@@ -206,6 +206,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="algorithms.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="algorithms.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="gyro.c">
       <SubType>compile</SubType>
     </Compile>
@@ -233,10 +239,34 @@
     <None Include="src\ASF\common\boards\board.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="moves.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="moves.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="pid.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="pid.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pomiar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pomiar.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pos_dir_enc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pos_dir_enc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="real_alg.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="real_alg.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\common\boards\user_board\init.c">

@@ -126,7 +126,7 @@ void LcdDec(uint32_t liczba) {
 	--i;
 
 	for(;i>=0;--i) {
-		LcdData(cyfra[i]+48);
+		LcdData((uint32_t)(cyfra[i]+48));
 	}  
 
 }

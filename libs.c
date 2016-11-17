@@ -4,7 +4,7 @@
  * Created: 2016-02-28 23:13:39
  *  Author: Dominik
  */ 
-#define  F_CPU    2000000UL
+#define  F_CPU    32000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -26,14 +26,43 @@ uint8_t ReadCalibrationByte( uint8_t index ) //konfuguracja adc
 
 	return( result );
 }
-
+void OscXtal() {
+	// konfiguracja generatora kwarcowego
+	OSC.XOSCCTRL	=	OSC_FRQRANGE_12TO16_gc |		// wybór kwarcu od 12 do 16 MHZ
+						OSC_XOSCSEL_XTAL_16KCLK_gc;		// czas na uruchomienie generatora
+	OSC.CTRL		=	OSC_XOSCEN_bm;					// uruchomienie generatora kwarcowego
+	// czekanie na ustabilizowanie siê generatora
+	for(uint8_t i=0; i<255; i++) {
+		if(OSC.STATUS & OSC_XOSCRDY_bm) {
+			_delay_ms(20);
+			CPU_CCP			=	CCP_IOREG_gc;			// odblokowanie zmiany Ÿród³a sygna³u zegarowego
+			CLK.CTRL		=	CLK_SCLKSEL_XOSC_gc;	// wybór Ÿród³a sygna³u zegarowego na XTAL 16MHz
+			// uk³ad nadzoruj¹cy kwarc
+			CPU_CCP			=	CCP_IOREG_gc;			// odblokowanie modyfikacji wa¿nych rejestrów
+			OSC.XOSCFAIL	=	OSC_XOSCFDEN_bm;		// w³¹czenie uk³adu detekcji b³êdu sygna³u zegarowego
+			
+			return;										// wyjœcie z funkcji jeœli generator siê uruchomi³
+		}
+		_delay_us(10);
+	}
+	//komunikat w przypadku braku uruchomienia generatora kwarcowego
+	LcdClear();
+	Lcd("Brak XTAL");
+}
+void Osc32MHz(void) {
+	OSC.CTRL     =    OSC_RC32MEN_bm;       // w³¹czenie oscylatora 32MHz
+	while(!(OSC.STATUS & OSC_RC32MRDY_bm)); // czekanie na ustabilizowanie siê generatora
+	CPU_CCP      =    CCP_IOREG_gc;         // odblokowanie zmiany Ÿród³a sygna³u
+	CLK.CTRL     =    CLK_SCLKSEL_RC32M_gc; // zmiana Ÿród³a sygna³u na RC 32MHz
+	LcdClear();                             // czyszczenie wyœwietlacza
+	Lcd("Wewn RC 32MHz");                   // komunikat o uruchomieniu generatora
+	_delay_ms(1000);
+	LcdClear();
+}
 
 void setADC(){	//konfuguracja adc
-	OSC.PLLCTRL = OSC_PLLSRC_RC2M_gc | OSC_PLLFAC3_bm; // 0x08 - wybieramy RC 2Mhz RC jako ?ród?o, a mno?nik PLL = 8
-	OSC.CTRL |= OSC_PLLEN_bm; // 0x10 - W??czamy PLL
-	while (0 == (OSC.STATUS & OSC_PLLRDY_bm)); // Opó?nienie konieczne dla stabilizacji PLL
-	CLK.CTRL = CLK_SCLKSEL2_bm; // 0x04 - ustawiamy PLL jako ?ród?o taktowania
-	CLK.PSCTRL = CLK_PSADIV0_bm; // Clk_per4 = Clk_sys/2  = 16MHz/2 = 8MHz
+
+	Osc32MHz();
 	ADCB.PRESCALER = ADC_PRESCALER2_bm; // 0x04
 	ADCB.CTRLB = ADC_CONMODE_bm; // 0x10
 	ADCB.CALL = ReadCalibrationByte( offsetof(NVM_PROD_SIGNATURES_t, ADCACAL0) );
@@ -68,33 +97,124 @@ void setADC(){	//konfuguracja adc
 	ADCB.CH3.INTCTRL = ADC_CH_INTLVL1_bm | ADC_CH_INTLVL0_bm; // 0x03
 	sei();	
 }
+
+uint16_t debancer (uint16_t p1,uint16_t p2,uint16_t p3)
+{	if(p1==p2 ||p2==p3)
+	
+	return p1;
+	else return (-1);
+}
+
 uint16_t adcPomiar_RD(){ //pomiar adc RD
-	PORTE.OUTSET		=	PIN4_bm;// Start ADC conversion
-	ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
-	_delay_us(100);
-	PORTE.OUTCLR		=	PIN4_bm;
-	return adc_result_RD;
+	uint16_t a [10];
+	uint16_t i=0;
+	uint16_t wynik=0;
+	for (i=0;i<10;i++)
+	{
+
+		PORTE.OUTSET		=	PIN4_bm;// Start ADC conversion
+		//0_delay_us(15);
+		ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
+		_delay_us(10);
+		PORTE.OUTCLR		=	PIN4_bm;
+		a[i]= adc_result_RD;
+		if (a[i]>2500) a[i]=0;
+	}
+	
+	for(i=0;i<10;i++)
+	wynik=wynik+a[i];
+	wynik=wynik/10;
+	//Lcd(" RD");
+	//LcdDec(wynik);
+	if (wynik<350)
+	return (1);
+	else return (0);
+	//return (wynik/10);
 }
 uint16_t adcPomiar_LD(){//pomiar adc lD
-	PORTE.OUTSET		=	PIN7_bm;// Start ADC conversion
-	ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
-	_delay_us(100);
-	PORTE.OUTCLR		=	PIN7_bm;
-	return adc_result_LD;
+	//uint16_t a [10];
+	uint16_t b [10];
+	uint16_t i=0;
+	uint16_t wynik=0;
+
+	
+	
+	for (i=0;i<10;i++)
+	{
+		
+		PORTE.OUTSET		=	PIN7_bm;// Start ADC conversion
+		
+		ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
+		_delay_us(16);
+		PORTE.OUTCLR		=	PIN7_bm;
+		b[i]= adc_result_LD;
+		if (b[i]>2500) b[i]=0;
+	}
+	for(i=0;i<10;i++)
+	wynik=wynik+b[i];
+	wynik=wynik/10;
+	if (wynik<450)
+	return (1);
+	else return (0);
+	
+	
 }
+
+
+
 uint16_t adcPomiar_LF(){ //pomiar adc LF
-	PORTE.OUTSET		=	PIN6_bm;// Start ADC conversion
-	ADCB.CH1.CTRL		|=	ADC_CH_START_bm;
-	_delay_us(100);
-	PORTE.OUTCLR		=	PIN6_bm;
-	return adc_result_LF;
+	
+	uint16_t a [10];
+	uint16_t i=0;
+	uint16_t wynik=0;
+	for (i=0;i<10;i++)
+	
+	{PORTE.OUTSET		=	PIN6_bm;// Start ADC conversion
+		ADCB.CH1.CTRL		|=	ADC_CH_START_bm;
+		_delay_us(15);
+		PORTE.OUTCLR		=	PIN6_bm;
+		a[i]=adc_result_LF;
+		if (a[i]>2500) a[i]=0;
+	}
+	
+	for(i=0;i<10;i++)
+	wynik=wynik+a[i];
+	
+wynik=wynik/10;
+if (wynik<180)
+	return (2);
+	else if (wynik<500)
+	return (1);
+	else
+	return (0);
 }
 uint16_t adcPomiar_RF(){ //pomiar adc RF
-	PORTE.OUTSET		=	PIN5_bm;// Start ADC conversion
-	ADCB.CH2.CTRL		|=	ADC_CH_START_bm;
-	_delay_us(100);
-	PORTE.OUTCLR		=	PIN5_bm;
-	return adc_result_RF;
+	uint16_t a [10];
+	uint16_t i=0;
+	uint16_t wynik=0;
+	for (i=0;i<10;i++)
+	
+	{
+		PORTE.OUTSET		=	PIN5_bm;// Start ADC conversion
+		ADCB.CH2.CTRL		|=	ADC_CH_START_bm;
+		_delay_us(13);
+		PORTE.OUTCLR		=	PIN5_bm;
+		a[i]= adc_result_RF;
+		if (a[i]>2500) a[i]=0;
+	}
+	
+	for(i=0;i<10;i++)
+	wynik=wynik+a[i];
+	wynik=wynik/10;
+	//Lcd(" RF");
+	//LcdDec(wynik);
+	
+	if (wynik<190)
+	return (2);
+	else if (wynik<1400)
+	return (1);
+	else
+	return (0);
 }
 void setMotorL(){
 	//------------ustawienia silnika 1
@@ -120,12 +240,13 @@ void setMotorR(){
 	TCD0.CCA		=	0;
 }
 
-void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
+void runR(int8_t o, int8_t k){ //kierowanie silnikiem prawym
 	TCD0.CCD		=	o;
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN5_bm;//input 1->0
 		PORTD.OUTCLR	=	PIN4_bm;//input 2->0
 	}
+	
 	else if(k==STOP){
 		PORTD.OUTSET	=	PIN5_bm;//input 1->1
 		PORTD.OUTSET	=	PIN4_bm;//input 2->1
@@ -139,7 +260,7 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem L
 		PORTD.OUTCLR	=	PIN4_bm;//input 2->0		
 	}
 }
-void runR(int8_t o, int8_t k){ //kierowanie silnikiem R
+void runL(int8_t o, int8_t k){ //kierowanie silnikiem lewym
 	TCD0.CCA		=	o;
 	if(k==LUZ){
 		PORTD.OUTCLR	=	PIN1_bm;//input 1->0
@@ -212,11 +333,14 @@ void setall(){
 	LcdInit();
 	setADC();
 	setbat();
-	TCC1.INTCTRLA     =    TC_OVFINTLVL_LO_gc;         // przepe³nienie ma generowaæ przerwanie LO
+
 	
-	TCC1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
-	TCC1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
-	TCC1.PER=2*1024;
+	TCD1.INTCTRLA     =    TC_OVFINTLVL_HI_gc;         // przepe³nienie ma generowaæ przerwanie LO
+	
+	TCD1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
+	TCD1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
+	TCD1.PER = 160;
+
 	
 }
 void ledYellow(){
@@ -228,6 +352,7 @@ void ledGreen(){
 }
 void setbat(){//funkcja ustawiajaca przerwanie na za niski poziom baterii
 	// konfiguracja komparatora 0 w porcie A
+	PORTF_OUTSET=PIN7_bm;
 	ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |
 	AC_MUXNEG_SCALER_gc;    // wejœcie + PIN A6
 	ACA.AC0CTRL			=	AC_ENABLE_bm|AC_HYSMODE_SMALL_gc|AC_INTLVL_LO_gc|AC_INTMODE_FALLING_gc;

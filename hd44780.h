@@ -18,7 +18,7 @@
 #ifndef HD44780_H_
 #define HD44780_H_
 
-#define F_CPU 2000000UL
+#define F_CPU 32000000UL
 
 
 #include <avr/io.h>
