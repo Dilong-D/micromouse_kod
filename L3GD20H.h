@@ -40,12 +40,12 @@
 #define REG_FIFO_SRC			 (0x2F)   //            r
 #define REG_IG_CFG				 (0x30)   // 00000000   rw
 #define REG_IG_SRC               (0x31)   //            r
-#define REG_IG_TSH_XH            (0x32)   // 00000000   rw
-#define REG_IG_TSH_XL            (0x33)   // 00000000   rw
-#define REG_IG_TSH_YH            (0x34)   // 00000000   rw
-#define REG_IG_TSH_YL            (0x35)   // 00000000   rw
-#define REG_IG_TSH_ZH            (0x36)   // 00000000   rw
-#define REG_IG_TSH_ZL            (0x37)   // 00000000   rw
+#define REG_IG_THS_XH            (0x32)   // 00000000   rw
+#define REG_IG_THS_XL            (0x33)   // 00000000   rw
+#define REG_IG_THS_YH            (0x34)   // 00000000   rw
+#define REG_IG_THS_YL            (0x35)   // 00000000   rw
+#define REG_IG_THS_ZH            (0x36)   // 00000000   rw
+#define REG_IG_THS_ZL            (0x37)   // 00000000   rw
 #define REG_IG_DURATION          (0x38)   // 00000000   rw
 #define REG_LOW_ODR				 (0x39)   // --000000
 

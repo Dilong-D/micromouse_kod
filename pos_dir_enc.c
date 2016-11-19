@@ -6,19 +6,19 @@
 /**
 * predkosc kola w mm/ms
 */
-float get_way_left(){
+float get_way_left(void){
 	if(old_enk_l > 30000)
 		old_enk_l -=  65536;
 	return -(old_enk_l * WHEEL_RADIUS_L * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
 }
 
-float get_way_right(){
+float get_way_right(void){
 	if(old_enk_r > 30000)
 		old_enk_r -=  65536;
 	return (old_enk_r * WHEEL_RADIUS_R * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
 }
 
-void get_params_enc(){
+void get_params_enc(void){
 	float wayl;
 	float wayr;
 	//predkosc katowa

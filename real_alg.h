@@ -12,10 +12,10 @@
 #include "pomiar.h"
 #include "pos_dir_enc.h"
 
-int action();
-void step_forwards_real();
+int action(void);
+void step_forwards_real(void);
 void turn_real(uint8_t direction);
-uint8_t move_real();
+uint8_t move_real(void);
 
 
 //Zadanie do wykonania

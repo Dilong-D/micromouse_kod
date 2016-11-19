@@ -31,17 +31,17 @@
 #define t_int 5.12 //czas miedzy dwoma przerwaniami dla PID i wyliczania pozycji.
 //------------FUNKCJE-----------
 uint8_t ReadCalibrationByte( uint8_t index );//kalibracja adc przez DMA
-void setADC();//ustawia ADC
-void setMotorL();//ustawia piny silnika L
+void setADC(void);//ustawia ADC
+void setMotorL(void);//ustawia piny silnika L
 void runL(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
-void setMotorR();//ustawia piny silnika R
+void setMotorR(void);//ustawia piny silnika R
 void runR(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
-uint16_t adcPomiar_LD();
-uint16_t adcPomiar_RD();//pomiar odleglosci
-uint16_t adcPomiar_LF();
-uint16_t adcPomiar_RF();
-void OscXtal();
-void setall();//ustawia wszystko
+uint16_t adcPomiar_LD(void);
+uint16_t adcPomiar_RD(void);//pomiar odleglosci
+uint16_t adcPomiar_LF(void);
+uint16_t adcPomiar_RF(void);
+void OscXtal(void);
+void setall(void);//ustawia wszystko
 uint16_t adc_result_LD;
 uint16_t adc_result_RD;
 uint16_t adc_result_LF;
@@ -49,10 +49,10 @@ uint16_t adc_result_RF;
 
 int old_enk_l; //Stara wartosc lewego enkodera (Potrzebne do wyznaczania pozycji)
 int old_enk_r;
-void ledYellow();
-void ledGreen();
-void setbat();
-void Osc32MHz();
+void ledYellow(void);
+void ledGreen(void);
+void setbat(void);
+void Osc32MHz(void);
 void OscPLL(uint8_t pllfactor);
 uint16_t debancer (uint16_t p1,uint16_t p2,uint16_t p3);
 

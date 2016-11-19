@@ -15,75 +15,80 @@
 
  
 	
-	short turn2(short direction)
-	{
-		if(direction == RIGHT)
-		switch(mouse_dir_real){
-			case UP:
-			return RIGHT;
-			
-			case DOWN:
-			return LEFT;
-			
-			case RIGHT:
-			return DOWN;
-			
-			case LEFT:
-			return UP;
+short turn2(short direction){
+	
+		if(direction == RIGHT){
+			switch(mouse_dir_real){
+				case UP:
+				return RIGHT;
+				
+				case DOWN:
+				return LEFT;
+				
+				case RIGHT:
+				return DOWN;
+				
+				case LEFT:
+				return UP;
+			}
 		}
-		if(direction == LEFT)
-		switch(mouse_dir_real){
-			case UP:
-			return LEFT;
-			
-			case DOWN:
-			return RIGHT;
-			
-			case RIGHT:
-			return UP;
-			
-			case LEFT:
-			return DOWN;
+		if(direction == LEFT){
+			switch(mouse_dir_real){
+				case UP:
+				return LEFT;
+				
+				case DOWN:
+				return RIGHT;
+				
+				case RIGHT:
+				return UP;
+				
+				case LEFT:
+				return DOWN;
+			}
 		}
-        if(direction == INVERS)
-switch(mouse_dir_real){
-	case UP:
-	return DOWN;
-	
-	case DOWN:
-	return UP;
-	
-	case RIGHT:
-	return LEFT;
-	
-	case LEFT:
-	return RIGHT;
+        if(direction == INVERS){
+			switch(mouse_dir_real){
+				case UP:
+				return DOWN;
+				
+				case DOWN:
+				return UP;
+				
+				case RIGHT:
+				return LEFT;
+				
+				case LEFT:
+				return RIGHT;
+			}
+		}
 }
-
-
-	}
 
 	int16_t mouse_dir_x(short dir) //  zapisuje jaka wartosc trzeba otrzymac by miec wartosc komorki przed
 	{
 		if(dir == RIGHT)
-		return (1);
+			return (1);
 		if(dir == LEFT)
-		return (-1);
+			return (-1);
 		if(dir == UP)
-		return (0);
+			return (0);
 		if(dir == DOWN)
-		return (0);
+			return (0);
+			
+
 	}
 	int16_t mouse_dir_y(short dir)
 	{
 		if(dir == RIGHT)
-		return (0);
+			return (0);
 		if(dir == LEFT)
-		return (0);
+			return (0);
 		if(dir == UP)
-		return (1);
+			return (1);
 		if(dir == DOWN)
-		return (-1);
+			return (-1);
+		
+
 	}
 	
 	

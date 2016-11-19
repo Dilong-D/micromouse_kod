@@ -20,12 +20,12 @@ float des_vr;
 short kalibracja; // czy kalibracja jest potrzebna 0 - nie jest potrzebna,  1 kalibracja potrzebna
 
 
- float abs2(float x);
+float abs2(float x);
 void forward(float dest, int dir);
 void rotateAngle(float angle);
-void kalibruj();
-void kalibruj_poczatek();
-void kalibruj_ruchy();
+void kalibruj(void);
+void kalibruj_poczatek(void);
+void kalibruj_ruchy(void);
 uint8_t kal_count;
 
-#endif;
+#endif

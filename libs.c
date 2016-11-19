@@ -26,7 +26,7 @@ uint8_t ReadCalibrationByte( uint8_t index ) //konfuguracja adc
 
 	return( result );
 }
-void OscXtal() {
+void OscXtal(void) {
 	// konfiguracja generatora kwarcowego
 	OSC.XOSCCTRL	=	OSC_FRQRANGE_12TO16_gc |		// wybór kwarcu od 12 do 16 MHZ
 						OSC_XOSCSEL_XTAL_16KCLK_gc;		// czas na uruchomienie generatora
@@ -60,7 +60,7 @@ void Osc32MHz(void) {
 	LcdClear();
 }
 
-void setADC(){	//konfuguracja adc
+void setADC(void){	//konfuguracja adc
 
 	Osc32MHz();
 	ADCB.PRESCALER = ADC_PRESCALER2_bm; // 0x04
@@ -105,7 +105,7 @@ uint16_t debancer (uint16_t p1,uint16_t p2,uint16_t p3)
 	else return (-1);
 }
 
-uint16_t adcPomiar_RD(){ //pomiar adc RD
+uint16_t adcPomiar_RD(void){ //pomiar adc RD
 	uint16_t a [10];
 	uint16_t i=0;
 	uint16_t wynik=0;
@@ -131,7 +131,7 @@ uint16_t adcPomiar_RD(){ //pomiar adc RD
 	else return (0);
 	//return (wynik/10);
 }
-uint16_t adcPomiar_LD(){//pomiar adc lD
+uint16_t adcPomiar_LD(void){//pomiar adc lD
 	//uint16_t a [10];
 	uint16_t b [10];
 	uint16_t i=0;
@@ -162,7 +162,7 @@ uint16_t adcPomiar_LD(){//pomiar adc lD
 
 
 
-uint16_t adcPomiar_LF(){ //pomiar adc LF
+uint16_t adcPomiar_LF(void){ //pomiar adc LF
 	
 	uint16_t a [10];
 	uint16_t i=0;
@@ -188,7 +188,7 @@ if (wynik<180)
 	else
 	return (0);
 }
-uint16_t adcPomiar_RF(){ //pomiar adc RF
+uint16_t adcPomiar_RF(void){ //pomiar adc RF
 	uint16_t a [10];
 	uint16_t i=0;
 	uint16_t wynik=0;
@@ -216,7 +216,7 @@ uint16_t adcPomiar_RF(){ //pomiar adc RF
 	else
 	return (0);
 }
-void setMotorL(){
+void setMotorL(void){
 	//------------ustawienia silnika 1
 	PORTD.DIRSET	=	PIN5_bm|//inpu2
 						PIN4_bm|//input1
@@ -230,7 +230,7 @@ void setMotorL(){
 	TCD0.CCD		=	0;
 	TCD0.CTRLA		=	TC_CLKSEL_DIV1_gc;
 }
-void setMotorR(){
+void setMotorR(void){
 	//------------ustawienia silnika 2
 	PORTD.DIRSET	=	PIN2_bm|//inpu2
 	PIN1_bm|//input1
@@ -280,7 +280,7 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem lewym
 	}
 }
 
-void setall(){
+void setall(void){
 	// ============================		wejscia		===========================================================================================
 	sei();
 	//-----------------------------		przyciski	-----------------------------------------------------------------------
@@ -343,14 +343,14 @@ void setall(){
 
 	
 }
-void ledYellow(){
+void ledYellow(void){
 	PORTF_OUTTGL=PIN5_bm;
 }
 
-void ledGreen(){
+void ledGreen(void){
 	PORTF_OUTTGL=PIN6_bm;
 }
-void setbat(){//funkcja ustawiajaca przerwanie na za niski poziom baterii
+void setbat(void){//funkcja ustawiajaca przerwanie na za niski poziom baterii
 	// konfiguracja komparatora 0 w porcie A
 	PORTF_OUTSET=PIN7_bm;
 	ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |

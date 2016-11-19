@@ -98,7 +98,7 @@ uint8_t new_wall_discovered = 1;
 
 //liczba krokow
 uint8_t numsteps = 0;
-void initLab(){
+void initLab(void){
     
     find_target = 1;
     mapping = 0;
@@ -143,7 +143,7 @@ void initLab(){
 /**
  * Mysz porusza sie o krok do przodu w kierunku, w ktorym jest zwrocona
  */
-void step_forwards(){
+void step_forwards(void){
         
         switch(mouse_dir){
             case RIGHT:
@@ -203,7 +203,7 @@ void step_forwards(){
   * Sprawdza, czy po lewej stronie myszy jest sciana (przydatne do algorytmow
   * Hand on the wall i Tremaux
   */ 
-uint8_t wall_on_left(){
+uint8_t wall_on_left(void){
     uint8_t res = 0;
     turn(LEFT);
     //Po obrocie w lewo - sciana przed mysza?
@@ -213,13 +213,13 @@ uint8_t wall_on_left(){
     return res;
 }
 
-inline uint8_t wall_in_front(){
+inline uint8_t wall_in_front(void){
     return ((labyrinth[labposx][labposy] & mouse_dir) == 0);
 }
 /**
  * Pojedynczy ruch z algorytmu hnd on wall
  */
-void hand_on_wall_step() {
+void hand_on_wall_step(void) {
 
         prev_labposx = labposx;
         prev_labposy = labposy;
@@ -276,7 +276,7 @@ uint8_t first_dir(uint8_t av_dirs){
  * Pojedynczy ruch z algorytmu Tremaux
  */
 
-void tremaux_step(){
+void tremaux_step(void){
     prev_labposx = labposx;
     prev_labposy = labposy;
     //Jesli wszedzie wokol robot albo juz szedl dwa razy, albo sa sciany - koniec mapowania
@@ -666,7 +666,7 @@ uint8_t flood_fill_loc_step(uint8_t begx, uint8_t begy, uint8_t endx1, uint8_t e
 /**
  * Ogólna funkcja do wykonywania następnego kroku algorytmu
  */
-void algStep(){
+void algStep(void){
     numsteps++;
     //Tu na wypadek niezgodnosci rzeczywistej pozycji i teoretycznej pozycji
     //I etap
@@ -752,7 +752,7 @@ void algStep(){
  * 9 - skrec w lewo i stoj w miejscu
  * 10- skrec w prawo i stoj w miejscu
  */
-uint8_t getNextAction(){
+uint8_t getNextAction(void){
     
     if(stop != 0)
         return 0;

@@ -7,7 +7,7 @@ uint8_t nst = 2;
 /**
 * Funkcja wywolywane przez main do wykonania nastepnej czynnosci
 */
-int action(){
+int action(void){
 	if(nst == 2){
 		com = getNextAction();
 		nst = 0;
@@ -22,7 +22,7 @@ int action(){
 /**
 Krok do przodu w rzeczywistosci
 */
-void step_forwards_real(){
+void step_forwards_real(void){
 	switch(mouse_dir_real){
 		case RIGHT:
 		labposx_real++;
@@ -126,7 +126,7 @@ void turn_real(uint8_t direction){
 	par.dir += 2*PI;
 }
 
-uint8_t move_real(){
+uint8_t move_real(void){
 	switch (com){
 		case 5:
 		if(nst == 0){

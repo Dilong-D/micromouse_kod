@@ -26,7 +26,7 @@
  short turn2(short direction);
  int16_t mouse_dir_x(short dir);
  int16_t mouse_dir_y(short dir);
- int16_t mierz ();
+ int16_t mierz (void);
  
  
  

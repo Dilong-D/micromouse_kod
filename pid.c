@@ -88,8 +88,8 @@ void wheel(float vl, float vr){
 		TCD0.CCA		=	100;
 		PORTD.OUTSET	=	PIN1_bm;//input 1->1
 		PORTD.OUTSET	=	PIN2_bm;//input 2->1
-		pid_params2.err_sum;
-		pid_params2.err_last;
+		pid_params2.err_sum = 0;
+		pid_params2.err_last = 0;
 	}
 	else{
 		ul = pid_calculate(vl, enkl,&pid_params2);
@@ -102,8 +102,8 @@ void wheel(float vl, float vr){
 		TCD0.CCD		=	100;
 		PORTD.OUTSET	=	PIN5_bm;//input 1->1
 		PORTD.OUTSET	=	PIN4_bm;//input 2->1
-		pid_params.err_sum;
-		pid_params.err_last;
+		pid_params.err_sum = 0;
+		pid_params.err_last = 0;
 	}
 	else{
 		ur = pid_calculate(vr, enkr,&pid_params);

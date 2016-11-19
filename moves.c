@@ -272,7 +272,7 @@ void rotateAngle(float angle) //dir==0 lewo ; dir==1 prawo
 
 }
 
-void kalibruj_ruchy()
+void kalibruj_ruchy(void)
 {
 	des_vl=-0.5;
 	des_vr=-0.5;
@@ -380,9 +380,7 @@ void kalibruj_ruchy()
 	
 }
 
-
-
-void kalibruj_poczatek()
+void kalibruj_poczatek(void)
 {
 	short debRF=debancer(adcPomiar_RF(),adcPomiar_RF(),adcPomiar_RF());  // pomiar RF
 	_delay_ms(1);
@@ -442,13 +440,7 @@ void kalibruj_poczatek()
 }
 
 
-
-
-
-
-
-
-void kalibruj()
+void kalibruj(void)
 {	
 	if ((kal_count > 2) &&   (((labyrinth[labposx_real][labposy_real]&UP)==0)||((labyrinth[labposx_real][labposy_real]&DOWN)==0))  &&   (((labyrinth[labposx_real][labposy_real]&LEFT)==0)||((labyrinth[labposx_real][labposy_real]&RIGHT)==0))  )
 	{
@@ -494,4 +486,3 @@ void kalibruj()
 	}
 	
 }
-

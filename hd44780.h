@@ -93,6 +93,8 @@
 //
 //-------------------------------------------------------------------------------------------------
 
+void _lcd_OutNibble(unsigned char nibbleToWrite);
+void _lcd_Write(unsigned char dataToWrite);
 void LcdCommand(unsigned char commandToWrite);
 void LcdData(unsigned char data);
 void LcdWrite(char * text);

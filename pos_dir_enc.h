@@ -14,10 +14,10 @@
 #define CNTS_PER_REV 12
 #define PRZEKLADNIA 10 //Przekladnia na silniku
 
-float get_way_left();
-float get_way_right();
+float get_way_left(void);
+float get_way_right(void);
 
-void get_params_enc();
+void get_params_enc(void);
 
 
 

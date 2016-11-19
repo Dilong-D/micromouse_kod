@@ -32,20 +32,20 @@
 //struktura w ktorej zapisywane sa bezposrednie pomiary (8-bitowe) dane pobrane z zyroskopa
 struct gyro {
 	
-	int64_t xlg;
-	int64_t xhg;
+	//int64_t xlg;
+	//int64_t xhg;
 	int64_t ylg;
 	int64_t yhg;
-	int64_t zlg;
-	int64_t zhg;
+	//int64_t zlg;
+	//int64_t zhg;
 };
 
 //struktura w ktorej zapisane sa juz przetworzone dane (16-bitowe)
 struct gyro_xyz {
 	
-	int64_t x;
+	//int64_t x;
 	int64_t y;
-	int64_t z;
+	//int64_t z;
 	
 };
 
@@ -56,7 +56,7 @@ float getAngleRadians(void);
 uint8_t writeByte(uint8_t addr,uint8_t val); //funkcja zmienia wartosci(8bitow) podanego rejestru (zapisanego w postaci bajtu)
 uint8_t readByte(uint8_t addr); //funkcja odczytujaca wartosc(8bitow) z podanego rejestru
 
-void readByteMulti(); //funkcja odczytuje parametry x,y,z zyroskopu
+void readByteMulti(void); //funkcja odczytuje parametry x,y,z zyroskopu
 
 struct gyro_xyz gyro;
 
