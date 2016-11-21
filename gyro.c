@@ -125,9 +125,11 @@ uint8_t readByte(uint8_t addr)
 	TWIE.MASTER.ADDR = 0b11010111; //Read SR + (SAD + R)
 	while(!(TWIE.MASTER.STATUS & TWI_MASTER_RIF_bm));
 	
+	TWIE.MASTER.CTRLC |= TWI_MASTER_ACKACT_bm;
+	
 	data = TWIE.MASTER.DATA;
 	
-	TWIE.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;		// send NACK
+	//TWIE.MASTER.CTRLC |= TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;		// send NACK
 
 	return data;
 	
