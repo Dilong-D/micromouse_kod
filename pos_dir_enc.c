@@ -68,7 +68,7 @@ void get_params_enc(void){
 		par.gyr  += 0;
 	}
 	else{
-		par.gyr  += w_gyr;
+		par.gyr  += w_gyr; //razy czas? chyba 5us?
 	}
 
 	

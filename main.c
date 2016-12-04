@@ -73,8 +73,8 @@ ISR(ACA_AC0_vect){
 
 ISR(TCD1_OVF_vect){
 	ledGreen();
-	wheel(des_vl, des_vr);
-	get_params_enc();
+	//wheel(des_vl, des_vr);
+	//get_params_enc();
 	//ledYellow();
 }
 //ISR(TCC1_OVF_vect){
@@ -103,14 +103,20 @@ int main(void) {
 // 	float max1 = 0;
 // 	float min1 = 0;
 	
- 	par.dir = 0;
- 	par.posx = 0;
- 	par.posy = 0;
- 	pid_init(8.33, 2.5760, 0, 8.57, 2.2988,0);
+ 	//par.dir = 0;
+ 	//par.posx = 0;
+ 	//par.posy = 0;
+ 	//pid_init(8.33, 2.5760, 0, 8.57, 2.2988,0);
 	 //rotateAngle(2);
-	des_vl = 20; des_vr = -20;
+	//des_vl = 2; des_vr = -20;
+	
+	
+	runR(90,PRAWO);
+	//runL(90,LEWO);
 	while(1){	
 		LcdClear();
+	
+		
 		//ang = getAngleRadians();
 		//
 		//if( ang < 0)
