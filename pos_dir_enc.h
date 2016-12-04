@@ -27,6 +27,7 @@ struct par_enc{
 	float posx;
 	float posy;
 	float gyr_dir;
+	float gyr;
 };
 
 struct par_enc par;

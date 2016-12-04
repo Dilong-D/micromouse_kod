@@ -19,10 +19,7 @@ void TWI_MasterInit(void)
 {
 	
 	//WIEN,RIEN, ENABLE and INTLVL bits high.  0xF8 - 1111 1000 
-	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm |
-							TWI_MASTER_INTLVL_HI_gc |
-							TWI_MASTER_RIEN_bm |
-							TWI_MASTER_WIEN_bm;
+	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm | TWI_MASTER_RIEN_bm |	TWI_MASTER_WIEN_bm ;
 	
 	// SMEN - SMART MODE ENABLE - 0x01 */
 	TWIE.MASTER.CTRLB	=   TWI_MASTER_SMEN_bm;
@@ -35,6 +32,7 @@ void TWI_MasterInit(void)
 	
 	PORTE.PIN0CTRL		=	PORT_OPC_WIREDANDPULL_gc;
 	PORTE.PIN1CTRL		=	PORT_OPC_WIREDANDPULL_gc;
+	
 	
 	//PORTE.DIR &= 0xFC;
 
@@ -180,6 +178,6 @@ void readByteMulti(void)
 }
 
 float getAngleRadians(){
-	readByteMulti();
-	return gyro.y*SENSITIVITY_2000DPS*DPS_TO_RADS;
+	readByteMulti();	
+	return gyro.y*SENSITIVITY_500DPS*DPS_TO_RADS - 0.051;
 }

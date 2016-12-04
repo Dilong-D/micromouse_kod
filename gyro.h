@@ -44,7 +44,7 @@ struct gyro {
 struct gyro_xyz {
 	
 	//int64_t x;
-	int64_t y;
+	float y;
 	//int64_t z;
 	
 };

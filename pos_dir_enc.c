@@ -31,7 +31,7 @@ void get_params_enc(void){
 	float dx;
 	//Przyrost posy
 	float dy;
-	//w_gyr = getAngleRadians();
+	float w_gyr; //= getAngleRadians();
 	
 	//Wylicz predkosc lewego kola
 	wayl = get_way_left();
@@ -62,6 +62,14 @@ void get_params_enc(void){
 	par.dir = new_dir;
 	par.posx += dx;
 	par.posy += dy;
+	w_gyr = getAngleRadians();
+	
+	if(w_gyr <= 0.02 && w_gyr >= -0.02){
+		par.gyr  += 0;
+	}
+	else{
+		par.gyr  += w_gyr;
+	}
 
 	
 	

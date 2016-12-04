@@ -209,7 +209,7 @@ void rotateAngle(float angle) //dir==0 lewo ; dir==1 prawo
 			Lcd("QQQ");
 			des_vl=0;
 			des_vr=0;
-			_delay_ms(1000);
+			//_delay_ms(1000);
 			break;
 			
 		}
@@ -246,29 +246,6 @@ void rotateAngle(float angle) //dir==0 lewo ; dir==1 prawo
 		}
 		
 	}
-	
-	
-	
-	float angpop=0;
-	for(int k  = 0; k < 4; ++k)
-	{
-		if(abs2(par.dir-PI*k/2) <= PI/4)
-		{
-			angpop = PI*k/2-par.dir;
-			break;
-			
-		}
-	}
-	
-	
-	LcdClear();
-	Lcd("fff");
-	LcdDec((int)(abs2(1000*angpop)));
-	Lcd2;
-	LcdDec((int)(abs2(1000*par.dir)));
-	_delay_ms(1000);
-	if(abs2(angpop) > 0.06)
-	rotateAngle(angpop);
 
 }
 

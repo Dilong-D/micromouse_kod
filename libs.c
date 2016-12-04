@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include "libs.h"
 #include "hd44780.h"
+#include "gyro.h"
 
 uint8_t ReadCalibrationByte( uint8_t index ) //konfuguracja adc
 {
@@ -204,8 +205,8 @@ uint16_t adcPomiar_RF(void){ //pomiar adc RF
 	}
 	
 	for(i=0;i<10;i++)
-	wynik=wynik+a[i];
-	wynik=wynik/10;
+	wynik = wynik+a[i];
+	wynik = wynik/10;
 	//Lcd(" RF");
 	//LcdDec(wynik);
 	
@@ -282,15 +283,15 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem lewym
 
 void setall(void){
 	// ============================		wejscia		===========================================================================================
-	sei();
+	
 	//-----------------------------		przyciski	-----------------------------------------------------------------------
 	PORTF.DIRCLR		=	PIN2_bm|PIN3_bm;					// pin F2 F3 jako wejœcie
 	PORTF.INT0MASK		=   PIN2_bm;               // pin F2 ma generowaæ przerwania INT0
 	PORTF.INT1MASK		=   PIN3_bm;
 	PORTF.PIN2CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F2
-	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
 	PORTF.PIN3CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F3
-	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
 	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc| PORT_INT1LVL_LO_gc;   // poziom LO dla przerwania INT0 portu F2 F3
 	//-------------------------------	enkodera R	------------------------------------------------------
 	PORTC.PIN0CTRL		=	PORT_ISC_LEVEL_gc | PORT_OPC_PULLUP_gc;
@@ -330,17 +331,21 @@ void setall(void){
 							PIN6_bm|
 							PIN7_bm;  
 	// ----------------------------		LCD		------------------------------
-	LcdInit();
+	
 	setADC();
 	setbat();
-
+	LcdInit();
+	
+	TWI_MasterInit();
+	enableDefault();
+	
 	
 	TCD1.INTCTRLA     =    TC_OVFINTLVL_HI_gc;         // przepe³nienie ma generowaæ przerwanie LO
 	
 	TCD1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
 	TCD1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
 	TCD1.PER = 160;
-
+	sei();
 	
 }
 void ledYellow(void){

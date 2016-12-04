@@ -65,6 +65,7 @@ ISR(PORTF_INT1_vect){
 	
 	
 }
+
 ISR(ACA_AC0_vect){
 	PORTF_OUTTGL=PIN7_bm;
 
@@ -74,7 +75,7 @@ ISR(TCD1_OVF_vect){
 	ledGreen();
 	wheel(des_vl, des_vr);
 	get_params_enc();
-
+	//ledYellow();
 }
 //ISR(TCC1_OVF_vect){
 	//
@@ -91,28 +92,52 @@ ISR(OSC_OSCF_vect) {									// przerwanie w razie awarii oscylatora
 
 int main(void) {
 
-	int i;
-	int c2;
+	//int i;
+	//int c2;
 	setall();
+	float ang;
 	
+		Lcd("Hello");
+	_delay_ms(100);
 	
-	Lcd("Hello");
+// 	float max1 = 0;
+// 	float min1 = 0;
 	
-_delay_ms(1000);
-	par.dir = 0;//3*PI/2;
-	par.posx = 0;
-	par.posy = 0;
-	pid_init(8.33, 24.5760, 4.0960, 8.57, 25.2988,4.2165);
-	Lcd("Start");
-	forward(100,1);
-	LcdClear();
-	LcdDec(abs2(par.posx*100));
-	Lcd2;
-	LcdDec(abs2(par.posy*100));
-	_delay_ms(50000);
-	
-		
+ 	par.dir = 0;
+ 	par.posx = 0;
+ 	par.posy = 0;
+ 	pid_init(8.33, 2.5760, 0, 8.57, 2.2988,0);
+	 //rotateAngle(2);
+	des_vl = 20; des_vr = -20;
 	while(1){	
+		LcdClear();
+		//ang = getAngleRadians();
+		//
+		//if( ang < 0)
+		//{
+			//Lcd("M");
+			//LcdDec(abs2(ang)*10000);
+			//if( ang < min1)
+				//min1 = ang;
+			//
+			//
+		//}
+		//else {
+			//Lcd("P");
+			//LcdDec(abs2(ang)*10000);
+			//if( ang > max1)
+				//max1 = ang;
+		//}
+		//
+		//Lcd2;
+		//Lcd("MAX: ");
+		//LcdDec((abs2(max1)*10000));
+		//Lcd("MIN: ");
+		//LcdDec((abs2(min1)*10000));
+		//LcdDec(abs2(par.gyr));
+		_delay_ms(100);
+		//ledYellow(); 
+
 	}
 		
 	
