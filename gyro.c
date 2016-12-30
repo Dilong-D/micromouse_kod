@@ -6,7 +6,7 @@
  */
 /* ---------------------------------------------------- */
 
-#define  F_CPU 32000000UL
+#define  F_CPU    32000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -19,7 +19,7 @@ void TWI_MasterInit(void)
 {
 	
 	//WIEN,RIEN, ENABLE and INTLVL bits high.  0xF8 - 1111 1000 
-	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm | TWI_MASTER_RIEN_bm |	TWI_MASTER_WIEN_bm ;
+	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm;
 	
 	// SMEN - SMART MODE ENABLE - 0x01 */
 	TWIE.MASTER.CTRLB	=   TWI_MASTER_SMEN_bm;

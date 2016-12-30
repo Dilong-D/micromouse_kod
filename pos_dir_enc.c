@@ -6,19 +6,19 @@
 /**
 * predkosc kola w mm/ms
 */
-float get_way_left(void){
+float get_way_left(){
 	if(old_enk_l > 30000)
 		old_enk_l -=  65536;
 	return -(old_enk_l * WHEEL_RADIUS_L * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
 }
 
-float get_way_right(void){
+float get_way_right(){
 	if(old_enk_r > 30000)
 		old_enk_r -=  65536;
 	return (old_enk_r * WHEEL_RADIUS_R * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
 }
 
-void get_params_enc(void){
+void get_params_enc(){
 	float wayl;
 	float wayr;
 	//predkosc katowa
@@ -31,7 +31,10 @@ void get_params_enc(void){
 	float dx;
 	//Przyrost posy
 	float dy;
-	float w_gyr; //= getAngleRadians();
+	float w_gyr;
+	
+	//float w_gyr;
+	//w_gyr = 11;//getAngleRadians();
 	
 	//Wylicz predkosc lewego kola
 	wayl = get_way_left();
@@ -69,7 +72,6 @@ void get_params_enc(void){
 	}
 	else{
 		par.gyr  += w_gyr; //razy czas? chyba 5us?
-	}
 
 	
 	

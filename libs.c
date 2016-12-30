@@ -27,7 +27,7 @@ uint8_t ReadCalibrationByte( uint8_t index ) //konfuguracja adc
 
 	return( result );
 }
-void OscXtal(void) {
+void OscXtal() {
 	// konfiguracja generatora kwarcowego
 	OSC.XOSCCTRL	=	OSC_FRQRANGE_12TO16_gc |		// wybór kwarcu od 12 do 16 MHZ
 						OSC_XOSCSEL_XTAL_16KCLK_gc;		// czas na uruchomienie generatora
@@ -50,6 +50,7 @@ void OscXtal(void) {
 	LcdClear();
 	Lcd("Brak XTAL");
 }
+
 void Osc32MHz(void) {
 	OSC.CTRL     =    OSC_RC32MEN_bm;       // w³¹czenie oscylatora 32MHz
 	while(!(OSC.STATUS & OSC_RC32MRDY_bm)); // czekanie na ustabilizowanie siê generatora
@@ -61,8 +62,10 @@ void Osc32MHz(void) {
 	LcdClear();
 }
 
-void setADC(void){	//konfuguracja adc
 
+void setADC(){	//konfuguracja adc
+
+	//OscXtal();
 	Osc32MHz();
 	ADCB.PRESCALER = ADC_PRESCALER2_bm; // 0x04
 	ADCB.CTRLB = ADC_CONMODE_bm; // 0x10
@@ -106,13 +109,18 @@ uint16_t debancer (uint16_t p1,uint16_t p2,uint16_t p3)
 	else return (-1);
 }
 
-uint16_t adcPomiar_RD(void){ //pomiar adc RD
+uint16_t adcPomiar_RD(){ //pomiar adc RD
 	uint16_t a [10];
 	uint16_t i=0;
 	uint16_t wynik=0;
 	for (i=0;i<10;i++)
 	{
-
+		
+		
+		//	ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
+		//_delay_us(5);
+		//	uint16_t a= adc_result_RD;
+		//if (a>2500) a=0;
 		PORTE.OUTSET		=	PIN4_bm;// Start ADC conversion
 		//0_delay_us(15);
 		ADCB.CH3.CTRL		|=	ADC_CH_START_bm;
@@ -132,7 +140,7 @@ uint16_t adcPomiar_RD(void){ //pomiar adc RD
 	else return (0);
 	//return (wynik/10);
 }
-uint16_t adcPomiar_LD(void){//pomiar adc lD
+uint16_t adcPomiar_LD(){//pomiar adc lD
 	//uint16_t a [10];
 	uint16_t b [10];
 	uint16_t i=0;
@@ -141,10 +149,14 @@ uint16_t adcPomiar_LD(void){//pomiar adc lD
 	
 	
 	for (i=0;i<10;i++)
-	{
+	{//ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
+		//_delay_us(20);
+		//a[i]=adc_result_LD;
+		
+		//if (a[i]>2500) a[i]=0;
 		
 		PORTE.OUTSET		=	PIN7_bm;// Start ADC conversion
-		
+		//delay_us(15);
 		ADCB.CH0.CTRL		|=	ADC_CH_START_bm;
 		_delay_us(16);
 		PORTE.OUTCLR		=	PIN7_bm;
@@ -152,8 +164,10 @@ uint16_t adcPomiar_LD(void){//pomiar adc lD
 		if (b[i]>2500) b[i]=0;
 	}
 	for(i=0;i<10;i++)
-	wynik=wynik+b[i];
+	wynik=wynik+b[i];//-a[i];
 	wynik=wynik/10;
+	//Lcd(" LD");
+	//LcdDec(wynik);
 	if (wynik<450)
 	return (1);
 	else return (0);
@@ -163,7 +177,7 @@ uint16_t adcPomiar_LD(void){//pomiar adc lD
 
 
 
-uint16_t adcPomiar_LF(void){ //pomiar adc LF
+uint16_t adcPomiar_LF(){ //pomiar adc LF
 	
 	uint16_t a [10];
 	uint16_t i=0;
@@ -181,7 +195,9 @@ uint16_t adcPomiar_LF(void){ //pomiar adc LF
 	for(i=0;i<10;i++)
 	wynik=wynik+a[i];
 	
-wynik=wynik/10;
+wynik=wynik/10;/*
+Lcd(" LF");
+LcdDec(wynik);	*/
 if (wynik<180)
 	return (2);
 	else if (wynik<500)
@@ -189,7 +205,7 @@ if (wynik<180)
 	else
 	return (0);
 }
-uint16_t adcPomiar_RF(void){ //pomiar adc RF
+uint16_t adcPomiar_RF(){ //pomiar adc RF
 	uint16_t a [10];
 	uint16_t i=0;
 	uint16_t wynik=0;
@@ -205,8 +221,8 @@ uint16_t adcPomiar_RF(void){ //pomiar adc RF
 	}
 	
 	for(i=0;i<10;i++)
-	wynik = wynik+a[i];
-	wynik = wynik/10;
+	wynik=wynik+a[i];
+	wynik=wynik/10;
 	//Lcd(" RF");
 	//LcdDec(wynik);
 	
@@ -217,7 +233,7 @@ uint16_t adcPomiar_RF(void){ //pomiar adc RF
 	else
 	return (0);
 }
-void setMotorL(void){
+void setMotorL(){
 	//------------ustawienia silnika 1
 	PORTD.DIRSET	=	PIN5_bm|//inpu2
 						PIN4_bm|//input1
@@ -231,7 +247,7 @@ void setMotorL(void){
 	TCD0.CCD		=	0;
 	TCD0.CTRLA		=	TC_CLKSEL_DIV1_gc;
 }
-void setMotorR(void){
+void setMotorR(){
 	//------------ustawienia silnika 2
 	PORTD.DIRSET	=	PIN2_bm|//inpu2
 	PIN1_bm|//input1
@@ -247,7 +263,6 @@ void runR(int8_t o, int8_t k){ //kierowanie silnikiem prawym
 		PORTD.OUTCLR	=	PIN5_bm;//input 1->0
 		PORTD.OUTCLR	=	PIN4_bm;//input 2->0
 	}
-	
 	else if(k==STOP){
 		PORTD.OUTSET	=	PIN5_bm;//input 1->1
 		PORTD.OUTSET	=	PIN4_bm;//input 2->1
@@ -281,7 +296,7 @@ void runL(int8_t o, int8_t k){ //kierowanie silnikiem lewym
 	}
 }
 
-void setall(void){
+void setall(){
 	// ============================		wejscia		===========================================================================================
 	
 	//-----------------------------		przyciski	-----------------------------------------------------------------------
@@ -289,9 +304,9 @@ void setall(void){
 	PORTF.INT0MASK		=   PIN2_bm;               // pin F2 ma generowaæ przerwania INT0
 	PORTF.INT1MASK		=   PIN3_bm;
 	PORTF.PIN2CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F2
-							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
 	PORTF.PIN3CTRL		=   PORT_OPC_PULLUP_gc|    // pull-up na F3
-							PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
+	PORT_ISC_FALLING_gc;   // przerwanie wywo³uje zbocze opadaj¹ce
 	PORTF.INTCTRL		=   PORT_INT0LVL_LO_gc| PORT_INT1LVL_LO_gc;   // poziom LO dla przerwania INT0 portu F2 F3
 	//-------------------------------	enkodera R	------------------------------------------------------
 	PORTC.PIN0CTRL		=	PORT_ISC_LEVEL_gc | PORT_OPC_PULLUP_gc;
@@ -331,31 +346,34 @@ void setall(void){
 							PIN6_bm|
 							PIN7_bm;  
 	// ----------------------------		LCD		------------------------------
-	
+	LcdInit();
 	setADC();
 	setbat();
-	LcdInit();
-	
+	// ----------------------------     GYRO       ----------------------------------------
 	TWI_MasterInit();
 	enableDefault();
-	
 	
 	TCD1.INTCTRLA     =    TC_OVFINTLVL_HI_gc;         // przepe³nienie ma generowaæ przerwanie LO
 	
 	TCD1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
 	TCD1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
 	TCD1.PER = 160;
+	
+	//TCC1.INTCTRLA     =    TC_OVFINTLVL_LO_gc;         // przepe³nienie ma generowaæ przerwanie LO
+	//TCC1.CTRLB        =    TC_WGMODE_NORMAL_gc;        // tryb normalny
+	//TCC1.CTRLA        =    TC_CLKSEL_DIV1024_gc;
+	//TCC1.PER = 16;
 	sei();
 	
 }
-void ledYellow(void){
+void ledYellow(){
 	PORTF_OUTTGL=PIN5_bm;
 }
 
-void ledGreen(void){
+void ledGreen(){
 	PORTF_OUTTGL=PIN6_bm;
 }
-void setbat(void){//funkcja ustawiajaca przerwanie na za niski poziom baterii
+void setbat(){//funkcja ustawiajaca przerwanie na za niski poziom baterii
 	// konfiguracja komparatora 0 w porcie A
 	PORTF_OUTSET=PIN7_bm;
 	ACA.AC0MUXCTRL		=	AC_MUXPOS_PIN2_gc |
