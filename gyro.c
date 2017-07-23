@@ -6,7 +6,7 @@
  */
 /* ---------------------------------------------------- */
 
-#define  F_CPU    32000000UL
+#define  F_CPU 32000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -19,7 +19,7 @@ void TWI_MasterInit(void)
 {
 	
 	//WIEN,RIEN, ENABLE and INTLVL bits high.  0xF8 - 1111 1000 
-	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm;
+	TWIE.MASTER.CTRLA	=	TWI_MASTER_ENABLE_bm | TWI_MASTER_RIEN_bm |	TWI_MASTER_WIEN_bm ;
 	
 	// SMEN - SMART MODE ENABLE - 0x01 */
 	TWIE.MASTER.CTRLB	=   TWI_MASTER_SMEN_bm;
@@ -144,7 +144,7 @@ void readByteMulti(void)
 	//g.zlg = readByte(REG_OUT_Z_L);
 	//g.zhg = readByte(REG_OUT_Z_H);
 
-	int64_t temp;
+	//int64_t temp;
 	//if(g.xhg > 127)
 	//{
 		//temp = g.xhg - 127;
@@ -155,15 +155,15 @@ void readByteMulti(void)
 		//gyro.x = g.xlg + g.xhg*256;
 	//}
 	
-	if(g.yhg > 127)
-	{
-		temp = g.yhg - 127;
-		gyro.y = g.ylg + temp*256 - 32768;
-	}
-	else
-	{
-		gyro.y = g.ylg + g.yhg*256;
-	}
+	//if(g.yhg > 127)
+	//{
+		//temp = g.yhg - 127;
+		//gyro.y = g.ylg + temp*256 - 32768;
+	//}
+	//else
+	//{
+		//gyro.y = g.ylg + g.yhg*256;
+	//}
 	
 	//if(g.zhg > 127)
 	//{
@@ -174,10 +174,10 @@ void readByteMulti(void)
 	//{
 		//gyro.z = g.zlg + g.zhg*256;
 	//}
-	
+	gyro.y = g.ylg + g.yhg*256;
 }
 
 float getAngleRadians(){
 	readByteMulti();	
-	return gyro.y*SENSITIVITY_500DPS*DPS_TO_RADS - 0.051;
+	return gyro.y;//*SENSITIVITY_500DPS*DPS_TO_RADS - 0.051;
 }

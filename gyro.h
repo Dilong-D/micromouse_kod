@@ -49,7 +49,7 @@ struct gyro_xyz {
 	
 };
 
-void TWI_MasterInit(void); //funkcja ustawia podstawowe parametry I2C (TWI)
+void TWI_MasterInit(void); //funkcja ustawia podstawowe parametry I2C (TWI) 
 void enableDefault(void); //funkcja uruchamia zyroskop i ustawia podstawowe parametry
 float getAngleRadians(void);
 

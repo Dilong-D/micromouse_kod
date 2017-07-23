@@ -2,23 +2,7 @@
 
 
 
-
-/**
-* predkosc kola w mm/ms
-*/
-float get_way_left(){
-	if(old_enk_l > 30000)
-		old_enk_l -=  65536;
-	return -(old_enk_l * WHEEL_RADIUS_L * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
-}
-
-float get_way_right(){
-	if(old_enk_r > 30000)
-		old_enk_r -=  65536;
-	return (old_enk_r * WHEEL_RADIUS_R * 2 * PI)/(CNTS_PER_REV * PRZEKLADNIA);
-}
-
-void get_params_enc(){
+struct par_enc get_params_enc(int16_t enkl,int16_t enkr,struct par_enc par){
 	float wayl;
 	float wayr;
 	//predkosc katowa
@@ -31,14 +15,13 @@ void get_params_enc(){
 	float dx;
 	//Przyrost posy
 	float dy;
-	float w_gyr;
+	float w_gyr; //= getAngleRadians();
 	
-	//float w_gyr;
-	//w_gyr = 11;//getAngleRadians();
+	
 	
 	//Wylicz predkosc lewego kola
-	wayl = get_way_left();
-	wayr= get_way_right();
+	wayl=(float)((enkl* WHEEL_RADIUS_L * 2.0 * PI))/(CNTS_PER_REV * PRZEKLADNIA);
+	wayr=(float)((enkr* WHEEL_RADIUS_R * 2.0 * PI))/(CNTS_PER_REV * PRZEKLADNIA);
 	
 	//Wylicz nowy kat
 	ddir = ((wayr - wayl)/SHAFT_LENGTH);
@@ -56,7 +39,7 @@ void get_params_enc(){
 	}
 	else{
 		//Jedzie na wprost
-		dx = -wayr * sin(par.dir);
+		dx = wayr * sin(par.dir);
 		dy = wayr * cos(par.dir);
 	}
 	
@@ -64,7 +47,7 @@ void get_params_enc(){
 	//Odpowiednio zmien stare wartosci
 	par.dir = new_dir;
 	par.posx += dx;
-	par.posy += dy;
+	par.posy =par.posy+ dy;
 	w_gyr = getAngleRadians();
 	
 	if(w_gyr <= 0.02 && w_gyr >= -0.02){
@@ -72,7 +55,8 @@ void get_params_enc(){
 	}
 	else{
 		par.gyr  += w_gyr; //razy czas? chyba 5us?
+	}
 
 	
-	
+	return par;
 }

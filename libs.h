@@ -33,9 +33,9 @@
 uint8_t ReadCalibrationByte( uint8_t index );//kalibracja adc przez DMA
 void setADC(void);//ustawia ADC
 void setMotorL(void);//ustawia piny silnika L
-void runL(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
+void motorL(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
 void setMotorR(void);//ustawia piny silnika R
-void runR(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
+void motorR(int8_t o, int8_t k);//zadaje wypelnienie PWM i kierunek silniku L
 uint16_t adcPomiar_LD(void);
 uint16_t adcPomiar_RD(void);//pomiar odleglosci
 uint16_t adcPomiar_LF(void);

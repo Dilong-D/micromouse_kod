@@ -18,9 +18,9 @@
  #include "pid.h"
  #include "pos_dir_enc.h"
   #define  F_CPU 32000000UL
-  
-  
   short kali_obrot;
+
+
 
  float abs2(float x)
  {

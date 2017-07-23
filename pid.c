@@ -104,17 +104,17 @@ void wheel(float vl, float vr){
 	}
 	//if(vr != 0){
 		if(ul >= 0)
-			runL(ul,LEWO);
+			motorL(ul,LEWO);
 	
 		else 
-			runL(-ul,PRAWO);
+			motorL(-ul,PRAWO);
 	
 	
 	if(ur >= 0)
-		runR(ur,PRAWO);
+		motorR(ur,PRAWO);
 	
 	else 
-		runR(-ur,LEWO);
+		motorR(-ur,LEWO);
 	
 	
 	
